@@ -1,20 +1,52 @@
-// Advent1_2021.cpp : This file contains the 'main' function. Program execution begins and ends there.
+//
+//
 //
 
 #include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
 
-int main()
+int main(int argc, char *argv[])
 {
-    std::cout << "Hello World!\n";
+    std::ifstream s("SonarOutput.txt");
+    try
+    {
+        if (!s.is_open())
+            throw std::exception("Program failed to open file");
+
+        int i;
+        std::vector<unsigned> v;
+        std::string str;
+
+        while (!s.eof())
+        {
+            std::getline(s, str);
+            i = std::stoi(str, nullptr);
+            if (i < 0)
+                throw std::exception("Found negative number in SonarOutput");
+
+            v.push_back(i);
+        }
+        s.close();
+
+        unsigned counter = 0;
+        i = -1;
+        for (unsigned new_i : v)
+        {
+            if (i != -1)
+            {
+                if (new_i > i) ++counter;
+            }
+            i = new_i;
+        }
+
+        std::cout << "Counter: " << counter << std::endl;
+    }
+    catch (const std::exception& error)
+    {
+        std::cout << error.what() << std::endl << "Exiting program";
+        exit(1);
+    }
+    return 0;
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
